@@ -1,0 +1,74 @@
+def max_coverage(grid):
+    n, m = len(grid), len(grid[0])
+
+    # Precompute left and right visibility for each row
+    left = [[0]*m for _ in range(n)]
+    right = [[0]*m for _ in range(n)]
+    up = [[0]*m for _ in range(n)]
+    down = [[0]*m for _ in range(n)]
+
+    # LEFT
+    for i in range(n):
+        stack = []
+        for j in range(m):
+            while stack and grid[i][stack[-1]] < grid[i][j]:
+                stack.pop()
+            if not stack:
+                left[i][j] = j  # can see all the way left
+            else:
+                left[i][j] = j - stack[-1] - 1
+            stack.append(j)
+
+    # RIGHT
+    for i in range(n):
+        stack = []
+        for j in range(m-1, -1, -1):
+            while stack and grid[i][stack[-1]] < grid[i][j]:
+                stack.pop()
+            if not stack:
+                right[i][j] = m - 1 - j
+            else:
+                right[i][j] = stack[-1] - j - 1
+            stack.append(j)
+
+    # UP
+    for j in range(m):
+        stack = []
+        for i in range(n):
+            while stack and grid[stack[-1]][j] < grid[i][j]:
+                stack.pop()
+            if not stack:
+                up[i][j] = i
+            else:
+                up[i][j] = i - stack[-1] - 1
+            stack.append(i)
+
+    # DOWN
+    for j in range(m):
+        stack = []
+        for i in range(n-1, -1, -1):
+            while stack and grid[stack[-1]][j] < grid[i][j]:
+                stack.pop()
+            if not stack:
+                down[i][j] = n - 1 - i
+            else:
+                down[i][j] = stack[-1] - i - 1
+            stack.append(i)
+
+    # Compute coverage
+    max_cover = 0
+    for i in range(n):
+        for j in range(m):
+            cover = 1 + left[i][j] + right[i][j] + up[i][j] + down[i][j]
+            max_cover = max(max_cover, cover)
+
+    return max_cover
+
+
+# -------------------------
+# MAIN (handles custom input)
+# -------------------------
+if __name__ == "__main__":
+    N, M = map(int, input().split())
+    grid = [list(map(int, input().split())) for _ in range(N)]
+    print(max_coverage(grid))
