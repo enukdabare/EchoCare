@@ -79,3 +79,71 @@ if __name__ == "__main__":
 3 1 4
 2 5 6
 1 2 3
+
+
+def max_signal_coverage(grid, N, M):
+    # Initialize coverage arrays
+    up = [[0]*M for _ in range(N)]
+    down = [[0]*M for _ in range(N)]
+    left = [[0]*M for _ in range(N)]
+    right = [[0]*M for _ in range(N)]
+
+    # Up direction
+    for j in range(M):
+        for i in range(N):
+            if i == 0:
+                up[i][j] = 1
+            else:
+                if grid[i-1][j] <= grid[i][j]:
+                    up[i][j] = up[i-1][j] + 1
+                else:
+                    up[i][j] = 1
+
+    # Down direction
+    for j in range(M):
+        for i in range(N-1, -1, -1):
+            if i == N-1:
+                down[i][j] = 1
+            else:
+                if grid[i+1][j] <= grid[i][j]:
+                    down[i][j] = down[i+1][j] + 1
+                else:
+                    down[i][j] = 1
+
+    # Left direction
+    for i in range(N):
+        for j in range(M):
+            if j == 0:
+                left[i][j] = 1
+            else:
+                if grid[i][j-1] <= grid[i][j]:
+                    left[i][j] = left[i][j-1] + 1
+                else:
+                    left[i][j] = 1
+
+    # Right direction
+    for i in range(N):
+        for j in range(M-1, -1, -1):
+            if j == M-1:
+                right[i][j] = 1
+            else:
+                if grid[i][j+1] <= grid[i][j]:
+                    right[i][j] = right[i][j+1] + 1
+                else:
+                    right[i][j] = 1
+
+    # Calculate max coverage
+    max_covered = 0
+    for i in range(N):
+        for j in range(M):
+            # Subtract 3 because the tower itself is counted 4 times
+            total = up[i][j] + down[i][j] + left[i][j] + right[i][j] - 3
+            max_covered = max(max_covered, total)
+
+    return max_covered
+
+
+if __name__ == "__main__":
+    N, M = map(int, input().split())
+    grid = [list(map(int, input().split())) for _ in range(N)]
+    print(max_signal_coverage(grid, N, M))
