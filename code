@@ -1,0 +1,66 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+
+    R, C = int(data[0]), int(data[1])
+    grid = []
+    idx = 2
+    for i in range(R):
+        row = list(map(int, data[idx:idx+C]))
+        grid.append(row)
+        idx += C
+
+    covered = [[False]*C for _ in range(R)]
+
+    # Row sweeps (both directions in one pass)
+    for r in range(R):
+        # left -> right
+        max_h = 0
+        for c in range(C):
+            if grid[r][c] > 0:
+                max_h = grid[r][c]
+                covered[r][c] = True
+            elif max_h > 0:
+                covered[r][c] = True
+            if grid[r][c] > max_h:
+                max_h = grid[r][c]
+
+        # right -> left
+        max_h = 0
+        for c in range(C-1, -1, -1):
+            if grid[r][c] > 0:
+                max_h = grid[r][c]
+                covered[r][c] = True
+            elif max_h > 0:
+                covered[r][c] = True
+            if grid[r][c] > max_h:
+                max_h = grid[r][c]
+
+    # Column sweeps (both directions in one pass)
+    for c in range(C):
+        # top -> bottom
+        max_h = 0
+        for r in range(R):
+            if grid[r][c] > 0:
+                max_h = grid[r][c]
+                covered[r][c] = True
+            elif max_h > 0:
+                covered[r][c] = True
+            if grid[r][c] > max_h:
+                max_h = grid[r][c]
+
+        # bottom -> top
+        max_h = 0
+        for r in range(R-1, -1, -1):
+            if grid[r][c] > 0:
+                max_h = grid[r][c]
+                covered[r][c] = True
+            elif max_h > 0:
+                covered[r][c] = True
+            if grid[r][c] > max_h:
+                max_h = grid[r][c]
+
+    # Count covered cells
+    shadow_count = sum(sum(1 for x in row if x) for row in covered)
+    print(shadow_count)
