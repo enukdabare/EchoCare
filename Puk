@@ -1,0 +1,52 @@
+import sys
+from collections import deque
+
+def main():
+    input_data = sys.stdin.read().strip().split()
+    it = iter(input_data)
+    N, M = int(next(it)), int(next(it))
+
+    edges = []
+    for _ in range(M):
+        u, v, s = int(next(it)), int(next(it)), int(next(it))
+        edges.append((s, u - 1, v - 1))  # stability, 0-based
+
+    # sort bridges by stability (vanish order)
+    edges.sort()
+
+    results = []
+
+    for i in range(M):
+        # remaining bridges after i vanishings
+        active = edges[i+1:]
+
+        # build adjacency list
+        g = [[] for _ in range(N)]
+        for _, u, v in active:
+            g[u].append(v)
+
+        # BFS from island 1 (node 0)
+        seen = [False] * N
+        parent = [-1] * N
+        q = deque([0])
+        seen[0] = True
+        while q:
+            u = q.popleft()
+            for v in g[u]:
+                if not seen[v]:
+                    seen[v] = True
+                    parent[v] = u
+                    q.append(v)
+
+        if not all(seen):
+            results.append(-1)
+        else:
+            # count how many edges were used in BFS tree
+            used_edges = sum(1 for p in parent if p != -1)
+            results.append(used_edges)
+
+    print("\n".join(map(str, results)))
+
+
+if __name__ == "__main__":
+    main()
