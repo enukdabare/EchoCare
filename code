@@ -35,3 +35,42 @@ def solve():
 
 if __name__ == "__main__":
     solve()
+
+
+444
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+
+    R, C = int(data[0]), int(data[1])
+    grid = []
+    idx = 2
+    for _ in range(R):
+        grid.append(list(map(int, data[idx:idx+C])))
+        idx += C
+
+    shadow_count = 0
+    # dictionary to track remaining shadow height per diagonal d = r - c
+    diag_shadow = {}
+
+    for r in range(R):
+        for c in range(C):
+            d = r - c  # diagonal index
+            remaining = diag_shadow.get(d, 0)
+
+            if remaining > 0:
+                shadow_count += 1
+                diag_shadow[d] = remaining - 1
+            else:
+                diag_shadow[d] = 0
+
+            # if there is an obelisk here, it may cast longer shadow
+            h = grid[r][c]
+            if h > 0:
+                diag_shadow[d] = max(diag_shadow[d], h)
+
+    print(shadow_count)
+
+if __name__ == "__main__":
+    solve()
