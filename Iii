@@ -1,0 +1,76 @@
+def solve():
+    # Read input
+    n, m = map(int, input().split())
+    grid = []
+    for _ in range(n):
+        row = list(map(int, input().split()))
+        grid.append(row)
+    
+    max_coverage = 0
+    
+    # Try placing tower at each position
+    for i in range(n):
+        for j in range(m):
+            tower_height = grid[i][j]
+            coverage = 1  # Tower itself is covered
+            
+            # Check all 4 directions
+            directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # up, down, left, right
+            
+            for di, dj in directions:
+                ni, nj = i + di, j + dj
+                
+                # Continue in this direction until we hit boundary or taller building
+                while 0 <= ni < n and 0 <= nj < m:
+                    if grid[ni][nj] > tower_height:
+                        break  # Signal stops, don't count this building
+                    coverage += 1  # Count this building
+                    ni += di
+                    nj += dj
+            
+            max_coverage = max(max_coverage, coverage)
+    
+    print(max_coverage)
+
+# Test with sample input
+def test_sample():
+    # Sample input: 3x3 grid
+    # 3 1 4
+    # 2 5 6  
+    # 1 2 3
+    grid = [
+        [3, 1, 4],
+        [2, 5, 6],
+        [1, 2, 3]
+    ]
+    
+    n, m = 3, 3
+    max_coverage = 0
+    
+    for i in range(n):
+        for j in range(m):
+            tower_height = grid[i][j]
+            coverage = 1  # Tower itself
+            
+            # Check all 4 directions
+            directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+            
+            for di, dj in directions:
+                ni, nj = i + di, j + dj
+                
+                while 0 <= ni < n and 0 <= nj < m:
+                    if grid[ni][nj] > tower_height:
+                        break
+                    coverage += 1
+                    ni += di
+                    nj += dj
+            
+            print(f"Tower at ({i},{j}) height {tower_height}: coverage = {coverage}")
+            max_coverage = max(max_coverage, coverage)
+    
+    print(f"Maximum coverage: {max_coverage}")
+
+# Uncomment to test:
+# test_sample()
+
+solve()
