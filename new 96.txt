@@ -1,3 +1,73 @@
+alth eka
+
+import sys
+import heapq
+
+def main():
+    data = list(map(int, sys.stdin.buffer.read().split()))
+    it = iter(data)
+    N = next(it); M = next(it); K = next(it)  # K not used per sample behavior
+    S = next(it) - 1; T = next(it) - 1
+
+    adj = [[] for _ in range(N)]
+    for _ in range(M):
+        u = next(it) - 1
+        v = next(it) - 1
+        w = next(it)
+        adj[u].append((v, w))
+        adj[v].append((u, w))
+
+    INF = 10**18
+    # bottleneck[i] = minimal possible max-edge weight along any path S->i
+    bottleneck = [INF] * N
+    bottleneck[S] = 0
+    pq = [(0, S)]  # (current bottleneck, node)
+
+    while pq:
+        cur_bott, u = heapq.heappop(pq)
+        if cur_bott != bottleneck[u]:
+            continue
+        if u == T:
+            break
+        for v, w in adj[u]:
+            nb = cur_bott if cur_bott > w else w
+            if nb < bottleneck[v]:
+                bottleneck[v] = nb
+                heapq.heappush(pq, (nb, v))
+
+    ans = bottleneck[T]
+    print(-1 if ans == INF else ans)
+
+#if __name__ == "__main__":
+#    main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import sys
 
 class DSU:
@@ -59,4 +129,11 @@ for w, u, v in edges:
     if dsu.union(u, v):
         total_cost += w
 
-print(total_cost)
+
+print(total_cost)   
+
+
+
+
+
+
