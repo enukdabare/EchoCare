@@ -21,3 +21,50 @@ for x in range(R):
 
 total_shadow = sum(shadow[x][y] for x in range(R) for y in range(C))
 print(total_shadow)
+
+
+===================================================
+
+import sys
+import threading
+from collections import defaultdict, deque
+
+def main():
+    n, m = map(int, sys.stdin.readline().split())
+    edges = []
+    for _ in range(m):
+        u, v, s = map(int, sys.stdin.readline().split())
+        edges.append((s, u-1, v-1))
+    edges.sort()
+    graph = [[] for _ in range(n)]
+    for _, u, v in edges:
+        graph[u].append(v)
+    results = []
+    active = [True]*m
+    def reachable_count():
+        visited = [False]*n
+        queue = deque([0])
+        visited[0] = True
+        while queue:
+            node = queue.popleft()
+            for i, (s,u,v) in enumerate(edges):
+                if not active[i]:
+                    continue
+                if u == node and not visited[v]:
+                    visited[v] = True
+                    queue.append(v)
+        return sum(visited) == n
+    for i in range(m):
+        active[i] = False
+        count = sum(active)
+        if reachable_count():
+            results.append(count)
+        else:
+            results.append(-1)
+    for r in results:
+        print(r)
+
+threading.Thread(target=main).start()
+
+=====================================
+
