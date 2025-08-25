@@ -12,18 +12,18 @@ def solve():
         idx += C
 
     shadow_count = 0
-    active = {}  # diagonal_id -> remaining shadow length
+    active = {} 
 
     for r in range(R):
         new_active = {}
         for c in range(C):
-            d = r - c  # diagonal id
-            # Continue previous shadow (decrease by 1)
+            d = r - c  
+            
             if d in active and active[d] > 0:
                 shadow_count += 1
                 new_active[d] = active[d] - 1
             
-            # If obelisk here, extend shadow
+            
             h = grid[r][c]
             if h > 0:
                 if d not in new_active or h > new_active[d]:
@@ -31,3 +31,5 @@ def solve():
         active = new_active
 
     print(shadow_count)
+    
+solve()
