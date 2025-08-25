@@ -70,3 +70,73 @@ def main():
         print(res)
 
 threading.Thread(target=main).start()
+
+
+
+
+
+import sys
+import threading
+
+def main():
+    import sys
+    input = sys.stdin.readline
+
+    n, m = map(int, input().split())
+    edges = []
+    for _ in range(m):
+        u, v, s = map(int, input().split())
+        edges.append((s, u-1, v-1))  # convert to 0-based indexing
+
+    # Sort edges by strength descending
+    edges.sort(reverse=True)
+
+    parent = list(range(n))
+    rank = [0] * n
+    size = [1] * n
+
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+
+    def union(x, y):
+        rx = find(x)
+        ry = find(y)
+        if rx == ry:
+            return False
+        if rank[rx] < rank[ry]:
+            rx, ry = ry, rx
+        parent[ry] = rx
+        size[rx] += size[ry]
+        if rank[rx] == rank[ry]:
+            rank[rx] += 1
+        return True
+
+    comp0 = 0
+    comp0_size = 1
+    added = 0
+    results = []
+
+    for s, u, v in edges:
+        if find(u) != find(v):
+            in_comp0 = (find(u) == comp0 or find(v) == comp0)
+            union(u, v)
+            added += 1
+            new_root = find(u)
+            if in_comp0:
+                comp0 = new_root
+                comp0_size = size[new_root]
+            elif new_root == comp0:
+                comp0_size = size[new_root]
+        # Append result after each edge processed
+        if comp0_size == n:
+            results.append(added)
+        else:
+            results.append(-1)
+
+    # Print results
+    for res in results:
+        print(res)
+
+threading.Thread(target=main).start()
