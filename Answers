@@ -68,3 +68,133 @@ threading.Thread(target=main).start()
 
 =====================================
 
+```python
+import sys
+import math
+from collections import defaultdict
+input = sys.stdin.readline
+
+n, K = map(int, input().split())
+A = list(map(int, input().split()))
+freq = defaultdict(int)
+
+for a in A:
+    for d in range(1, int(a**0.5)+1):
+        if a % d == 0:
+            freq[d] += 1
+            if d != a//d:
+                freq[a//d] += 1
+
+max_gcd = 1
+for g in sorted(freq.keys(), reverse=True):
+    if n - freq[g] <= K:
+        max_gcd = g
+        break
+
+print(max_gcd)
+```
+
+
+============================================
+
+```python
+import sys
+import threading
+from collections import deque
+
+def main():
+    import sys
+    sys.setrecursionlimit(1 << 25)
+    N, M, K = map(int, sys.stdin.readline().split())
+    S, T = map(int, sys.stdin.readline().split())
+    S -= 1
+    T -= 1
+    edges = []
+    weights = set()
+    for _ in range(M):
+        u, v, w = map(int, sys.stdin.readline().split())
+        u -= 1
+        v -= 1
+        edges.append((u, v, w))
+        weights.add(w)
+    weights = sorted(list(weights))
+    
+    from collections import defaultdict
+    
+    class Dinic:
+        def __init__(self, N):
+            self.N = N
+            self.G = [[] for _ in range(N)]
+        def add(self, fr, to, cap):
+            forward = [to, cap, None]
+            forward[2] = backward = [fr, 0, forward]
+            self.G[fr].append(forward)
+            self.G[to].append(backward)
+        def bfs(self, s, t, level):
+            q = deque()
+            level[s] = 0
+            q.append(s)
+            while q:
+                v = q.popleft()
+                for to, cap, rev in self.G[v]:
+                    if cap > 0 and level[to] < 0:
+                        level[to] = level[v] + 1
+                        q.append(to)
+            return level[t] >= 0
+        def dfs(self, v, t, upTo, level, iter):
+            if v == t:
+                return upTo
+            for i in range(iter[v], len(self.G[v])):
+                iter[v] = i
+                to, cap, rev = self.G[v][i]
+                if cap > 0 and level[v] < level[to]:
+                    d = self.dfs(to, t, min(upTo, cap), level, iter)
+                    if d > 0:
+                        self.G[v][i][1] -= d
+                        rev[1] += d
+                        return d
+            return 0
+        def max_flow(self, s, t):
+            flow = 0
+            level = [-1]*self.N
+            INF = 10**18
+            while True:
+                level = [-1]*self.N
+                if not self.bfs(s, t, level):
+                    break
+                iter = [0]*self.N
+                while True:
+                    f = self.dfs(s, t, INF, level, iter)
+                    if f == 0:
+                        break
+                    flow += f
+            return flow
+
+    def check(X):
+        dinic = Dinic(N*2)
+        for i in range(N):
+            if i == S or i == T:
+                dinic.add(i, i+N, K)
+            else:
+                dinic.add(i, i+N,1)
+        for u,v,w in edges:
+            if w <= X:
+                dinic.add(u+N,v,1)
+                dinic.add(v+N,u,1)
+        return dinic.max_flow(S,T+N) >= K
+
+    l, r = 1, max(weights)
+    ans = -1
+    while l <= r:
+        mid = (l+r)//2
+        if check(mid):
+            ans = mid
+            r = mid -1
+        else:
+            l = mid +1
+    print(ans)
+
+threading.Thread(target=main).start()
+```
+
+
