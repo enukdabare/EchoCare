@@ -1,0 +1,33 @@
+def solve():
+    import sys
+    input = sys.stdin.read
+    data = input().split()
+    
+    R, C = int(data[0]), int(data[1])
+    grid = []
+    idx = 2
+    for i in range(R):
+        row = list(map(int, data[idx:idx+C]))
+        grid.append(row)
+        idx += C
+
+    shadow_count = 0
+    active = {}  # diagonal_id -> remaining shadow length
+
+    for r in range(R):
+        new_active = {}
+        for c in range(C):
+            d = r - c  # diagonal id
+            # Continue previous shadow (decrease by 1)
+            if d in active and active[d] > 0:
+                shadow_count += 1
+                new_active[d] = active[d] - 1
+            
+            # If obelisk here, extend shadow
+            h = grid[r][c]
+            if h > 0:
+                if d not in new_active or h > new_active[d]:
+                    new_active[d] = h
+        active = new_active
+
+    print(shadow_count)
