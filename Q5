@@ -1,0 +1,64 @@
+class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    def find(self, x):
+        while self.parent[x] != x:
+            self.parent[x] = self.parent[self.parent[x]]
+            x = self.parent[x]
+        return x
+    def union(self, x, y):
+        xr, yr = self.find(x), self.find(y)
+        if xr == yr:
+            return False
+        if self.rank[xr] < self.rank[yr]:
+            self.parent[xr] = yr
+        elif self.rank[xr] > self.rank[yr]:
+            self.parent[yr] = xr
+        else:
+            self.parent[yr] = xr
+            self.rank[xr] += 1
+        return True
+
+n, m, k, f = map(int, input().split())
+edges = []
+for _ in range(m):
+    u, v, w = map(int, input().split())
+    edges.append((w, min(u, v), max(u, v)))
+mandatory = set()
+for _ in range(k):
+    u, v = map(int, input().split())
+    mandatory.add((min(u, v), max(u, v)))
+forbidden = set()
+for _ in range(f):
+    u, v = map(int, input().split())
+    forbidden.add((min(u, v), max(u, v)))
+
+edges.sort()
+dsu = DSU(n)
+mst = []
+cost = 0
+for w, u, v in edges:
+    if (u, v) in forbidden:
+        continue
+    if (u, v) in mandatory:
+        if not dsu.union(u, v):
+            print(-1)
+            exit()
+        mst.append((u, v))
+        cost += w
+for w, u, v in edges:
+    if (u, v) in forbidden or (u, v) in mandatory:
+        continue
+    if dsu.union(u, v):
+        mst.append((u, v))
+        cost += w
+    if len(mst) == n - 1:
+        break
+
+if len(mst) != n - 1 or not all(dsu.find(0) == dsu.find(i) for i in range(n)):
+    print(-1)
+else:
+    print(cost)
+    for u, v in sorted(mst):
+        print(u, v)
