@@ -1,0 +1,62 @@
+import sys
+
+class DSU:
+    def __init__(self, n):
+        self.p = list(range(n + 1))
+        self.r = [0] * (n + 1)
+
+    def find(self, x):
+        while self.p[x] != x:
+            self.p[x] = self.p[self.p[x]]
+            x = self.p[x]
+        return x
+
+    def union(self, a, b):
+        ra, rb = self.find(a), self.find(b)
+        if ra == rb:
+            return False
+        if self.r[ra] < self.r[rb]:
+            ra, rb = rb, ra
+        self.p[rb] = ra
+        if self.r[ra] == self.r[rb]:
+            self.r[ra] += 1
+        return True
+
+data = sys.stdin.buffer.read().split()
+it = iter(data)
+N = int(next(it)); M = int(next(it)); K = int(next(it))
+powers = [int(next(it)) for _ in range(K)]
+
+edges = []
+for _ in range(M):
+    u = int(next(it)); v = int(next(it)); w = int(next(it))
+    edges.append((w, u, v))
+
+dsu_full = DSU(N)
+for w, u, v in edges:
+    dsu_full.union(u, v)
+
+has_power = {}
+roots = set()
+for node in range(1, N + 1):
+    roots.add(dsu_full.find(node))
+
+for r in roots:
+    has_power[r] = False
+
+for p in powers:
+    has_power[dsu_full.find(p)] = True
+
+for r in roots:
+    if not has_power[r]:
+        print(-1)
+        sys.exit(0)
+
+edges.sort(key=lambda x: x[0])
+dsu = DSU(N)
+total_cost = 0
+for w, u, v in edges:
+    if dsu.union(u, v):
+        total_cost += w
+
+print(total_cost)
