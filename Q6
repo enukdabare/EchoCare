@@ -43,3 +43,34 @@ Output Format
 A single integer → maximum number of buildings covered by any single tower.
 
 make the above code eligible to pass for any type of test case given as mentioned inputs, please give the correct code
+
+
+
+def max_signal_coverage(grid, N, M):
+    max_covered = 0
+    
+    # Directions: up, down, left, right
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    
+    for i in range(N):
+        for j in range(M):
+            height = grid[i][j]
+            count = 1  # The tower itself counts
+            for dx, dy in directions:
+                x, y = i + dx, j + dy
+                while 0 <= x < N and 0 <= y < M and grid[x][y] <= height:
+                    count += 1
+                    x += dx
+                    y += dy
+            max_covered = max(max_covered, count)
+    
+    return max_covered
+
+if __name__ == "__main__":
+    # Read input
+    N, M = map(int, input().split())
+    grid = [list(map(int, input().split())) for _ in range(N)]
+    
+    # Get result
+    result = max_signal_coverage(grid, N, M)
+    print(result)
