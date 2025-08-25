@@ -1,0 +1,39 @@
+def solve():
+    n, m = map(int, input().split())
+    grid = []
+    for _ in range(n):
+        row = list(map(int, input().split()))
+        grid.append(row)
+    
+    max_coverage = 0
+    
+    for tower_row in range(n):
+        for tower_col in range(m):
+            tower_height = grid[tower_row][tower_col]
+            coverage = 1
+            
+            r = tower_row - 1
+            while r >= 0 and grid[r][tower_col] <= tower_height:
+                coverage += 1
+                r -= 1
+            
+            r = tower_row + 1
+            while r < n and grid[r][tower_col] <= tower_height:
+                coverage += 1
+                r += 1
+            
+            c = tower_col - 1
+            while c >= 0 and grid[tower_row][c] <= tower_height:
+                coverage += 1
+                c -= 1
+            
+            c = tower_col + 1
+            while c < m and grid[tower_row][c] <= tower_height:
+                coverage += 1
+                c += 1
+            
+            max_coverage = max(max_coverage, coverage)
+    
+    print(max_coverage)
+
+solve()
