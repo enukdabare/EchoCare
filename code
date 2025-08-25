@@ -6,69 +6,31 @@ def solve():
     R, C = int(data[0]), int(data[1])
     grid = []
     idx = 2
-    for i in range(R):
-        row = list(map(int, data[idx:idx+C]))
-        grid.append(row)
-        idx += C
-
-    covered = [[False]*C for _ in range(R)]
-
-    directions = [(0,1),(0,-1),(1,0),(-1,0)]  # right, left, down, up
-
-    for r in range(R):
-        for c in range(C):
-            h = grid[r][c]
-            if h > 0:  # this is a tower
-                covered[r][c] = True  # tower itself
-                for dr, dc in directions:
-                    nr, nc = r + dr, c + dc
-                    while 0 <= nr < R and 0 <= nc < C:
-                        if grid[nr][nc] > h:  # blocked
-                            break
-                        covered[nr][nc] = True
-                        nr += dr
-                        nc += dc
-
-    shadow_count = sum(sum(1 for x in row if x) for row in covered)
-    print(shadow_count)
-
-
-if __name__ == "__main__":
-    solve()
-
-
-444
-def solve():
-    import sys
-    input = sys.stdin.read
-    data = input().split()
-
-    R, C = int(data[0]), int(data[1])
-    grid = []
-    idx = 2
     for _ in range(R):
         grid.append(list(map(int, data[idx:idx+C])))
         idx += C
 
     shadow_count = 0
-    # dictionary to track remaining shadow height per diagonal d = r - c
-    diag_shadow = {}
+    diag_shadow = {}  # remaining shadow height along diagonals r-c
 
     for r in range(R):
         for c in range(C):
-            d = r - c  # diagonal index
+            d = r - c
             remaining = diag_shadow.get(d, 0)
 
-            if remaining > 0:
+            # cell is shadowed if remaining > 0 **or** if there is an obelisk here
+            h = grid[r][c]
+            if remaining > 0 or h > 0:
                 shadow_count += 1
+
+            # update diagonal shadow for future cells
+            if remaining > 0:
                 diag_shadow[d] = remaining - 1
             else:
                 diag_shadow[d] = 0
 
-            # if there is an obelisk here, it may cast longer shadow
-            h = grid[r][c]
             if h > 0:
-                diag_shadow[d] = max(diag_shadow[d], h)
+                diag_shadow[d] = max(diag_shadow.get(d, 0), h)
 
     print(shadow_count)
 
