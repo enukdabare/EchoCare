@@ -13,54 +13,25 @@ def solve():
 
     covered = [[False]*C for _ in range(R)]
 
-    # Row sweeps (both directions in one pass)
+    directions = [(0,1),(0,-1),(1,0),(-1,0)]  # right, left, down, up
+
     for r in range(R):
-        # left -> right
-        max_h = 0
         for c in range(C):
-            if grid[r][c] > 0:
-                max_h = grid[r][c]
-                covered[r][c] = True
-            elif max_h > 0:
-                covered[r][c] = True
-            if grid[r][c] > max_h:
-                max_h = grid[r][c]
+            h = grid[r][c]
+            if h > 0:  # this is a tower
+                covered[r][c] = True  # tower itself
+                for dr, dc in directions:
+                    nr, nc = r + dr, c + dc
+                    while 0 <= nr < R and 0 <= nc < C:
+                        if grid[nr][nc] > h:  # blocked
+                            break
+                        covered[nr][nc] = True
+                        nr += dr
+                        nc += dc
 
-        # right -> left
-        max_h = 0
-        for c in range(C-1, -1, -1):
-            if grid[r][c] > 0:
-                max_h = grid[r][c]
-                covered[r][c] = True
-            elif max_h > 0:
-                covered[r][c] = True
-            if grid[r][c] > max_h:
-                max_h = grid[r][c]
-
-    # Column sweeps (both directions in one pass)
-    for c in range(C):
-        # top -> bottom
-        max_h = 0
-        for r in range(R):
-            if grid[r][c] > 0:
-                max_h = grid[r][c]
-                covered[r][c] = True
-            elif max_h > 0:
-                covered[r][c] = True
-            if grid[r][c] > max_h:
-                max_h = grid[r][c]
-
-        # bottom -> top
-        max_h = 0
-        for r in range(R-1, -1, -1):
-            if grid[r][c] > 0:
-                max_h = grid[r][c]
-                covered[r][c] = True
-            elif max_h > 0:
-                covered[r][c] = True
-            if grid[r][c] > max_h:
-                max_h = grid[r][c]
-
-    # Count covered cells
     shadow_count = sum(sum(1 for x in row if x) for row in covered)
     print(shadow_count)
+
+
+if __name__ == "__main__":
+    solve()
