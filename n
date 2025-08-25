@@ -117,25 +117,25 @@ for _ in range(f):
     u, v = map(int, input().split())
     forbidden.add((min(u, v), max(u, v)))
 
-# Sort edges by (weight, u, v) — ensures lexicographic priority
+# Sort edges: first by weight, then by (u,v) for lexicographic MST
 edges.sort(key=lambda x: (x[0], x[1], x[2]))
 
 dsu = DSU(n)
 mst = []
 cost = 0
 
-# Step 1: Add mandatory edges first
+# Add mandatory edges first
 for w, u, v in edges:
     if (u, v) in forbidden:
         continue
     if (u, v) in mandatory:
-        if not dsu.union(u, v):  # cycle with mandatory edge → impossible
+        if not dsu.union(u, v):
             print(-1)
             exit()
         mst.append((u, v, w))
         cost += w
 
-# Step 2: Add remaining edges in strict lexicographic order
+# Add remaining edges
 for w, u, v in edges:
     if (u, v) in forbidden or (u, v) in mandatory:
         continue
@@ -145,11 +145,11 @@ for w, u, v in edges:
     if len(mst) == n - 1:
         break
 
-# Step 3: Validate MST
+# Verify connectivity
 if len(mst) != n - 1 or not all(dsu.find(0) == dsu.find(i) for i in range(n)):
     print(-1)
 else:
-    # Sort final MST edges lexicographically
+    # Now sort MST edges lexicographically
     mst_sorted = sorted((u, v) for u, v, _ in mst)
     print(cost)
     for u, v in mst_sorted:
