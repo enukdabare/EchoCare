@@ -1,0 +1,24 @@
+def count_shadows(grid, R, C):
+    shadow_len = [[0]*C for _ in range(R)]
+    shadowed_cells = 0
+    
+    for i in range(R):
+        for j in range(C):
+            if grid[i][j] > 0:  # obelisk
+                shadow_len[i][j] = grid[i][j]
+            else:
+                if i > 0 and j > 0:
+                    shadow_len[i][j] = max(shadow_len[i-1][j-1] - 1, 0)
+            
+            # Mark as shadowed only if it’s sand (0) and shadow reaches here
+            if grid[i][j] == 0 and shadow_len[i][j] > 0:
+                shadowed_cells += 1
+    
+    return shadowed_cells
+
+
+# ---- Driver ----
+if __name__ == "__main__":
+    R, C = map(int, input().split())
+    grid = [list(map(int, input().split())) for _ in range(R)]
+    print(count_shadows(grid, R, C))
