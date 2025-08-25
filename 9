@@ -1,0 +1,52 @@
+import sys
+import math
+from collections import defaultdict
+input = sys.stdin.readline
+
+n, K = map(int, input().split())
+A = list(map(int, input().split()))
+freq = defaultdict(int)
+
+for a in A:
+    for d in range(1, int(a**0.5)+1):
+        if a % d == 0:
+            freq[d] += 1
+            if d != a//d:
+                freq[a//d] += 1
+
+max_gcd = 1
+for g in sorted(freq.keys(), reverse=True):
+    if n - freq[g] <= K:
+        max_gcd = g
+        break
+
+print(max_gcd)
+
+make the above code suitable for all i kind of random inputs as showm below according to the questquestion 
+In a robotics lab, there are N robots, each powered by a battery with a certain charge level. To prepare the robots for a synchronized task, you can reprogram at most K batteries.
+
+    Reprogramming a battery allows you to replace its charge with any of its divisors, including 1.
+    Each battery can be reprogrammed at most once, and you may choose not to reprogram some batteries.
+
+The synchronization efficiency of the robot fleet is defined as the Greatest Common Divisor (GCD) of all battery charges after reprogramming.
+
+Determine the maximum efficiency you can achieve by reprogramming at most K batteries.
+
+Input Format
+    First line: Two integers N and K
+N → number of robots (1 ≤ N ≤ 2 × 10^5)
+K → maximum number of reprogramming operations allowed (0 ≤ K ≤ N)
+    Second line: N space separated integers A[1], A[2], …, A[N]
+A[i] → initial charge of the i-th robot’s battery (1 ≤ A[i] ≤ 10^9)
+
+Constraints
+    1 ≤ N ≤ 2 × 10^5
+    0 ≤ K ≤ N
+    1 ≤ A[i] ≤ 10^9
+
+Output Format
+A single integer → maximum GCD possible after reprogramming at most K batteries.
+
+Sample Input
+3 1
+6 10 15
