@@ -1,0 +1,21 @@
+# Count total shadowed cells in the desert
+R, C = map(int, input().split())
+grid = [list(map(int, input().split())) for _ in range(R)]
+
+# Keep track of shadow length from top-left to bottom-right
+shadow = [[0]*C for _ in range(R)]
+count = 0
+
+for i in range(R):
+    for j in range(C):
+        if grid[i][j] > 0:        # Obelisk here
+            shadow[i][j] = grid[i][j]
+        else:                     # Sand cell
+            if i > 0 and j > 0:   # Take from previous diagonal
+                shadow[i][j] = max(shadow[i-1][j-1] - 1, 0)
+        
+        # Count if it's sand and shadow reaches here
+        if grid[i][j] == 0 and shadow[i][j] > 0:
+            count += 1
+
+print(count)
