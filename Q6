@@ -1,39 +1,45 @@
-def solve():
-    n, m = map(int, input().split())
-    grid = []
-    for _ in range(n):
-        row = list(map(int, input().split()))
-        grid.append(row)
-    
-    max_coverage = 0
-    
-    for tower_row in range(n):
-        for tower_col in range(m):
-            tower_height = grid[tower_row][tower_col]
-            coverage = 1
-            
-            r = tower_row - 1
-            while r >= 0 and grid[r][tower_col] <= tower_height:
-                coverage += 1
-                r -= 1
-            
-            r = tower_row + 1
-            while r < n and grid[r][tower_col] <= tower_height:
-                coverage += 1
-                r += 1
-            
-            c = tower_col - 1
-            while c >= 0 and grid[tower_row][c] <= tower_height:
-                coverage += 1
-                c -= 1
-            
-            c = tower_col + 1
-            while c < m and grid[tower_row][c] <= tower_height:
-                coverage += 1
-                c += 1
-            
-            max_coverage = max(max_coverage, coverage)
-    
-    print(max_coverage)
+def countPaths(m, n, memo):
+    if n == 1 or m == 1:
+        memo[m][n] = 1
+        return 1
 
-solve()
+
+    if  memo[m][n] == 0:
+         memo[m][n] = countPaths(m-1,n, memo) + \
+            countPaths(m,n-1, memo)
+
+    return  memo[m][n]
+
+
+def number_of_paths(m, n):
+      
+    memo = [[0 for _ in range(n + 1)] for _ in range(m + 1)]
+    ans = countPaths(m, n, memo)
+    return ans
+
+if __name__ == "__main__":
+    n, m = 5,2
+
+    res = number_of_paths(m, n)
+    print(res)
+
+You are given a 2D grid of size N × M, where each cell represents the height of a building.
+
+A tower located on a building can send signals in the four cardinal directions: up, down, left, and right.
+
+A signal stops propagating in a direction when it encounters a building with a height strictly greater than the tower. The tower itself counts as covered.
+
+For each cell, determine how many buildings can receive a signal from that tower. Your task is to find the maximum number of buildings that can be covered by a single tower.
+
+Input Format
+First line: two integers N and M → grid dimensions (1 ≤ N, M ≤ 1000)
+Next N lines: each containing M integers → building heights (1 ≤ Height ≤ 10^9)
+
+Constraints
+1 ≤ N,M ≤ 1000
+1 ≤ Height ≤ 10^9
+
+Output Format
+A single integer → maximum number of buildings covered by any single tower.
+
+make the above code eligible to pass for any type of test case given as mentioned inputs, please give the correct code
