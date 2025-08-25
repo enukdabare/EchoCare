@@ -1,0 +1,35 @@
+You are given a 2D grid of size N × M, where each cell represents the height of a building.
+
+A tower located on a building can send signals in the four cardinal directions: up, down, left, and right.
+
+A signal stops propagating in a direction when it encounters a building with a height strictly greater than the tower. The tower itself counts as covered.
+
+For each cell, determine how many buildings can receive a signal from that tower. Your task is to find the maximum number of buildings that can be covered by a single tower.
+
+Input Format
+
+First line: two integers N and M → grid dimensions (1 ≤ N, M ≤ 1000)
+
+Next N lines: each containing M integers → building heights (1 ≤ Height ≤ 10^9)
+
+Constraints
+
+1 ≤ N,M ≤ 1000
+
+1 ≤ Height ≤ 10^9
+
+Output Format
+
+A single integer → maximum number of buildings covered by any single tower.
+
+Sample Input 0
+
+3 3
+3 1 4
+2 5 6
+1 2 3
+
+Sample Output 0
+
+5
+
