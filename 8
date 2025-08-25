@@ -1,0 +1,91 @@
+A kingdom is built across a river with N islands, connected by M one-way magical bridges. Each bridge has a stability value (a positive integer).
+
+    Over time, bridges vanish in order of their stability: weakest bridges vanish first.
+    When a bridge vanishes, it may disconnect parts of the kingdom.
+
+The King wants to know, for each point in time, what is the minimum number of bridges that must remain active so that every island is still reachable from island 1.
+
+If at some point it becomes impossible for all islands to be reachable from island 1, return -1 for that time.
+
+Input Format
+
+    First line: Two integers N and M (number of islands, number of bridges).
+    Next M lines: Three integers u v s meaning there is a directed bridge from island u to island v with stability s.
+    Bridges vanish in ascending order of stability.
+
+Constraints
+
+    2 ≤ N ≤ 2000
+    1 ≤ M ≤ 5000
+    1 ≤ s ≤ 10^9
+    Graph can be sparse/dense → naive recomputation (BFS/DFS for each removal) will time out. Needs optimization with DSU on reverse edges, strong connectivity, or offline queries.
+
+Output Format
+
+    Print M lines, where line i represents the minimum number of bridges still required for connectivity after the first i bridges have vanished.
+    If connectivity is impossible, print -1.
+
+
+import sys
+import threading
+from collections import defaultdict, deque
+
+def main():
+    n, m = map(int, sys.stdin.readline().split())
+    edges = []
+    for _ in range(m):
+        u, v, s = map(int, sys.stdin.readline().split())
+        edges.append((s, u-1, v-1))
+    edges.sort()
+    graph = [[] for _ in range(n)]
+    for _, u, v in edges:
+        graph[u].append(v)
+    results = []
+    active = [True]*m
+    def reachable_count():
+        visited = [False]*n
+        queue = deque([0])
+        visited[0] = True
+        while queue:
+            node = queue.popleft()
+            for i, (s,u,v) in enumerate(edges):
+                if not active[i]:
+                    continue
+                if u == node and not visited[v]:
+                    visited[v] = True
+                    queue.append(v)
+        return sum(visited) == n
+    for i in range(m):
+        active[i] = False
+        count = sum(active)
+        if reachable_count():
+            results.append(count)
+        else:
+            results.append(-1)
+    for r in results:
+        print(r)
+
+threading.Thread(target=main).start()
+
+
+Input (stdin)
+4 5
+1 2 2
+2 3 3
+1 3 5
+3 4 4
+2 4 6
+
+Your Output (stdout)
+-1
+-1
+-1
+-1
+-1
+
+Expected Output
+3
+2
+2
+1
+-1
