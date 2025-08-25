@@ -81,3 +81,28 @@ for g in sorted(freq.keys(), reverse=True):
         break
 
 print(max_gcd)
+
+
+
+564655
+import sys
+import math
+from collections import Counter
+
+input = sys.stdin.readline
+n, K = map(int, input().split())
+A = list(map(int, input().split()))
+
+max_a = max(A)
+cnt = Counter(A)
+ans = 1
+
+# Check GCDs from largest to smallest
+for g in range(1, max_a+1):
+    total = 0
+    # Sum counts of multiples of g
+    for multiple in range(g, max_a+1, g):
+        total += cnt.get(multiple, 0)
+    if n - total <= K:
+        ans = g
+print(ans)
