@@ -68,7 +68,7 @@ threading.Thread(target=main).start()
 
 =====================================
 
-```python
+
 import sys
 import math
 from collections import defaultdict
@@ -92,12 +92,11 @@ for g in sorted(freq.keys(), reverse=True):
         break
 
 print(max_gcd)
-```
 
 
 ============================================
 
-```python
+
 import sys
 import threading
 from collections import deque
@@ -195,6 +194,6 @@ def main():
     print(ans)
 
 threading.Thread(target=main).start()
-```
+
 
 
