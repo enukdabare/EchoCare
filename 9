@@ -50,3 +50,34 @@ A single integer → maximum GCD possible after reprogramming at most K batterie
 Sample Input
 3 1
 6 10 15
+
+
+_____
+
+import sys
+from collections import defaultdict
+import math
+
+input = sys.stdin.readline
+
+n, K = map(int, input().split())
+A = list(map(int, input().split()))
+freq = defaultdict(int)
+
+# Count how many numbers can be divisible by each divisor
+for a in A:
+    for d in range(1, int(a**0.5)+1):
+        if a % d == 0:
+            freq[d] += 1
+            if d != a // d:
+                freq[a // d] += 1
+
+# Check divisors in decreasing order to find max GCD achievable
+max_gcd = 1
+for g in sorted(freq.keys(), reverse=True):
+    # If we can make all numbers divisible by g with <= K reprograms
+    if n - freq[g] <= K:
+        max_gcd = g
+        break
+
+print(max_gcd)
