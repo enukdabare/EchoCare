@@ -1,0 +1,145 @@
+from collections import defaultdict, deque
+
+def max_flow_edmonds_karp(graph, source, sink):
+    """
+    Edmonds-Karp algorithm for maximum flow
+    graph: adjacency list with capacities
+    Returns: maximum flow value
+    """
+    def bfs_find_path():
+        visited = set()
+        queue = deque([(source, float('inf'))])
+        visited.add(source)
+        parent = {}
+        
+        while queue:
+            node, flow = queue.popleft()
+            
+            for neighbor in graph[node]:
+                if neighbor not in visited and graph[node][neighbor] > 0:
+                    visited.add(neighbor)
+                    parent[neighbor] = node
+                    new_flow = min(flow, graph[node][neighbor])
+                    
+                    if neighbor == sink:
+                        return new_flow, parent
+                    
+                    queue.append((neighbor, new_flow))
+        
+        return 0, None
+    
+    max_flow_value = 0
+    
+    while True:
+        flow, parent = bfs_find_path()
+        if flow == 0:
+            break
+            
+        max_flow_value += flow
+        
+        # Update residual capacities
+        current = sink
+        while current != source:
+            prev = parent[current]
+            graph[prev][current] -= flow
+            graph[current][prev] += flow
+            current = prev
+    
+    return max_flow_value
+
+def can_find_k_paths(edges, n, s, t, k, max_capacity):
+    """
+    Check if we can find K vertex-disjoint paths with all edges <= max_capacity
+    """
+    # Filter edges by capacity
+    filtered_edges = [(u, v) for u, v, w in edges if w <= max_capacity]
+    
+    # Create vertex-split graph for vertex disjoint paths
+    # Each vertex i (except s,t) becomes i_in and i_out with edge (i_in, i_out, 1)
+    # Original edge (u,v) becomes (u_out, v_in, 1)
+    
+    graph = defaultdict(lambda: defaultdict(int))
+    
+    # Add vertex splitting edges (capacity 1 for vertex disjointness)
+    for i in range(1, n + 1):
+        if i != s and i != t:
+            in_node = f"{i}_in"
+            out_node = f"{i}_out"
+            graph[in_node][out_node] = 1
+            graph[out_node][in_node] = 0  # Reverse edge
+    
+    # Add original edges in the split graph
+    for u, v in filtered_edges:
+        if u == s and v == t:
+            # Direct edge from source to sink
+            graph[s][t] += 1
+            graph[t][s] = 0
+        elif u == s:
+            # From source to v_in
+            v_in = f"{v}_in"
+            graph[s][v_in] += 1
+            graph[v_in][s] = 0
+        elif v == s:
+            # From u_out to source (reverse direction)
+            u_out = f"{u}_out"
+            graph[u_out][s] += 1
+            graph[s][u_out] = 0
+        elif u == t:
+            # From v_out to sink
+            v_out = f"{v}_out"
+            graph[v_out][t] += 1
+            graph[t][v_out] = 0
+        elif v == t:
+            # From u_out to sink
+            u_out = f"{u}_out"
+            graph[u_out][t] += 1
+            graph[t][u_out] = 0
+        else:
+            # Between intermediate vertices
+            u_out = f"{u}_out"
+            v_in = f"{v}_in"
+            graph[u_out][v_in] += 1
+            graph[v_in][u_out] = 0
+            
+            # Also add reverse direction (undirected graph)
+            v_out = f"{v}_out"
+            u_in = f"{u}_in"
+            graph[v_out][u_in] += 1
+            graph[u_in][v_out] = 0
+    
+    # Find maximum flow from s to t
+    flow = max_flow_edmonds_karp(graph, s, t)
+    return flow >= k
+
+def solve():
+    # Read input
+    n, m, k = map(int, input().split())
+    s, t = map(int, input().split())
+    
+    edges = []
+    capacities = set()
+    
+    for _ in range(m):
+        u, v, w = map(int, input().split())
+        edges.append((u, v, w))
+        capacities.add(w)
+    
+    # Binary search on the answer
+    capacities = sorted(capacities)
+    left, right = 0, len(capacities) - 1
+    result = -1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        max_cap = capacities[mid]
+        
+        if can_find_k_paths(edges, n, s, t, k, max_cap):
+            result = max_cap
+            right = mid - 1
+        else:
+            left = mid + 1
+    
+    print(result)
+
+if __name__ == "__main__":
+    solve()
