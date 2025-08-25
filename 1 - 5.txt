@@ -38,8 +38,8 @@ Return an array of 2 integers:
 
 The number of sessions left for junior researchers.
 The total neural response gain left for them.
-Sample Input 0
 
+Sample Input 0
 3
 0900
 1030
@@ -50,53 +50,14 @@ Sample Input 0
 1030
 1200
 300
-Sample Output 0
 
+Sample Output 0
 2
 400
 
 
 
-In a distant quantum research facility, scientists are experimenting with chains of entangled particles to transmit ultra fast signals across dimensions. Each particle in the chain has an entanglement coefficient, represented as an integer.
-
-Due to dimensional fluctuations, certain particles may destabilize if their coefficient is too small compared to nearby dominant particles. These unstable particles create quantum gaps, reducing the overall stability of the chain.
-
-The quantum instability of the chain is computed as follows:
-
-For each particle i in the chain, find:
-
-L → the nearest particle to the left of i with a strictly greater coefficient.
-R → the nearest particle to the right of i with a strictly greater coefficient.
-If both L and R exist, the particle’s contribution to instability is: min(L, R) - coeff[i]
-Otherwise, if either L or R is missing, the contribution is 0.
-The total quantum instability of the chain is the sum of contributions from all particles.
-
-'Nearest greater' means the closest particle strictly on the left or right with a coefficient greater than the current particle.
-Equal values do not count as greater.
-Input Format
-
-First line: Integer n - the number of particles in the chain.
-Second line: n space separated integers: coeff[0], coeff[1], ..., coeff[n-1] representing the entanglement coefficients of each particle.
-Constraints
-
-1 ≤ n ≤ 10^6
-1 ≤ coeff[i] ≤ 10^9
-Time limit: 2 seconds → Brute force O(n²) will not pass.
-Efficient solutions (O(n) or O(n log n)) using monotonic stacks or other optimized methods are recommended.
-Output Format
-
-Print a single integer - the total quantum instability of the chain.
-
-Sample Input 0
-
-5
-1 2 3 4 5
-Sample Output 0
-
-0
-
-
-
+##3##
 A futuristic city has N energy stations connected by M bidirectional cables. Each cable requires a certain amount of energy to activate.
 
 Some stations are designated as power stations. Energy from a power station can reach any station connected directly or indirectly through activated cables.
@@ -126,8 +87,8 @@ Output Format
 
 A single integer → minimum total cost to connect all stations to at least one power station.
 Output -1 if it is impossible.
-Sample Input 0
 
+Sample Input 0
 5 6 2
 1 5
 1 2 2
@@ -136,11 +97,12 @@ Sample Input 0
 4 5 2
 2 5 10
 1 3 8
-Sample Output 0
 
+Sample Output 0
 9
 
 
+##4##
 The Intergalactic Federation has built a vast network of planets connected by wormholes. Each wormhole allows travel between two planets at a certain energy cost. You are given an undirected weighted graph where:
 
 Planets are represented as nodes (0 to n-1).
@@ -167,8 +129,8 @@ Output Format
 
 Print n space separated integers, where the i th integer is the minimum cost to reach planet i from start using at most K hyperjumps.
 If a planet is unreachable, print -1 for that position.
-Sample Input 0
 
+Sample Input 0
 8 6
 0 1 4
 1 2 6
@@ -178,13 +140,13 @@ Sample Input 0
 5 6 1
 0
 1
-Sample Output 0
 
+Sample Output 0
 0 0 4 7 0 2 3 -1
 
 
 
-
+##5##
 The Intergalactic Federation is building a high-tech power grid connecting all its cities. Each city is a node in a graph, and possible connections are edges with construction costs.
 
 The goal is to minimize the total cost while ensuring all cities are connected.
@@ -226,8 +188,8 @@ Next n-1 lines: edges in the MST, each as u v (sorted by min(u,v) then max(u,v))
 MST must include all mandatory edges.
 MST must exclude all forbidden edges.
 If no valid MST exists, output -1.
-Sample Input 0
 
+Sample Input 0
 5 7 2 1
 0 1 2
 0 2 3
@@ -239,8 +201,8 @@ Sample Input 0
 0 1
 2 3
 1 3
-Sample Output 0
 
+Sample Output 0
 14
 0 1
 2 3
