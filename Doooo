@@ -1,0 +1,54 @@
+def solve():
+    N, M = map(int, input().split())
+    edges = []
+    for _ in range(M):
+        u, v, s = map(int, input().split())
+        edges.append((s, u - 1, v - 1))  # 0-based
+    
+    # Sort edges by stability (vanish order)
+    edges.sort()
+    
+    results = []
+    
+    for i in range(M):
+        # Remaining bridges after i vanishings
+        active = edges[i+1:]
+        
+        # Build adjacency list
+        g = [[] for _ in range(N)]
+        for _, u, v in active:
+            g[u].append(v)
+        
+        # BFS from node 0 (island 1)
+        from collections import deque
+        seen = [False] * N
+        parent = [-1] * N
+        q = deque([0])
+        seen[0] = True
+        while q:
+            u = q.popleft()
+            for v in g[u]:
+                if not seen[v]:
+                    seen[v] = True
+                    parent[v] = u
+                    q.append(v)
+        
+        if not all(seen):
+            results.append(-1)
+        else:
+            # Count how many edges actually used in BFS tree
+            used_edges = sum(1 for p in parent if p != -1)
+            results.append(used_edges)
+    
+    for r in results:
+        print(r)
+
+
+# Example run (matches sample)
+# Input:
+# 4 5
+# 1 2 2
+# 2 3 3
+# 1 3 5
+# 3 4 4
+# 2 4 6
