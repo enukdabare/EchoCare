@@ -33,3 +33,15 @@ def solve():
     print(shadow_count)
     
 solve()
+
+Sample Input 0
+4 4
+0 2 0 0
+0 0 0 0
+0 0 3 0
+0 0 0 0
+
+Sample Output 0
+4
+
+
